@@ -1,0 +1,11 @@
+[project]
+name = "visionlab-studio"
+version = "1.2.0"
+description = "A local computer vision workspace for images and sampled video."
+authors = [{name = "Swayam Shakya"}]
+requires-python = ">=3.11,<3.13"
+dynamic = ["dependencies"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

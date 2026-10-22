@@ -1,0 +1,247 @@
+# VisionLab Studio
+
+A local computer vision workspace for editing images, detecting objects, removing backgrounds and exploring short videos.
+
+**Author and maintainer:** Swayam Shakya · [RippedPaper](https://github.com/RippedPaper)
+
+Open an image, adjust its details, compare the result and download it. Switch to object detection or background removal when you want to work with pretrained models. Video Lab applies edge detection or object detection to a bounded set of frames and reports the work as it finishes.
+
+## Start here
+
+Install **Python 3.11 or 3.12**, extract the project, and open a terminal in `VisionLab/`.
+
+**macOS / Linux** (macOS users can also open `run_macos.command`)
+
+```bash
+bash run_mac_linux.sh
+```
+
+**Windows**
+
+```bat
+run_windows.bat
+```
+
+Open **http://127.0.0.1:8000**. Keep the terminal open; press Ctrl+C to stop.
+
+The scripts create `.venv`, install the core dependencies and start the server on localhost. The first setup needs an internet connection. `index.html` is the application's main page, served at `/`. Opening it directly with `file://` or publishing it on GitHub Pages cannot start the Python backend.
+
+If you are replacing an earlier copy, extract this release into a fresh folder and let the script create a new `.venv`. Do not copy the old virtual environment; the model dependencies changed.
+
+### Enable object detection and background removal
+
+Image adjustments and video edge detection work with the core installation. For YOLO detection and neural background removal, activate the environment and install:
+
+```bash
+# macOS / Linux
+source .venv/bin/activate
+# Windows Command Prompt: .venv\Scripts\activate.bat
+python -m visionlab.setup_models --small
+```
+
+The setup command installs the tested CPU torch/torchvision pair, the remaining model dependencies, YOLO11n, YOLO11s and u2netp weights. Restart the server after setup. Omit `--small` if you only need the faster nano detector. If dependencies are already installed, add `--download-only`. You can also install `requirements-models.txt` manually; on Windows/Linux, installing CPU PyTorch first avoids unnecessary CUDA packages. Model dependencies include PyTorch and can be large. No paid service or GPU is required. Inference uses the CPU. An unavailable dependency or download produces an error, not a substitute result.
+
+Standard pretrained weights are stored in `~/.cache/visionlab/`: `yolo11n.pt`, `yolo11s.pt`, and `u2netp.onnx`. The background model download is checked against its expected SHA-256 checksum before use. These caches are outside the repository. To prepare an offline machine, install dependencies and run each model once while connected, or supply trusted compatible weights in the appropriate cache. Do not load untrusted model files.
+
+### Manual setup
+
+```bash
+python -m venv .venv
+# Activate as shown above.
+python -m pip install -r requirements.txt
+python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
+```
+
+Run commands from the repository root. File serving and worker imports use absolute project paths internally. Use **one Uvicorn worker**; video job state is local to that process. Do not add `--workers`.
+
+## Interface and platform support
+
+The entire interface is in `index.html` (about 39 KB): no frontend framework, CDN, external font or build step. It includes light/dark themes, phone-friendly tabs, drag-and-drop uploads, enlarged previews, progress feedback and real result downloads. The Image Lab sample button creates a simple geometric image for trying adjustments. It is not a detection benchmark.
+
+The HTML can be opened by itself to inspect the layout, but processing requires the running Python server. Its offline panel explains how to start it. Serve the page through the backend for working requests; opening a local file cannot launch Python or execute a notebook.
+
+The setup targets Windows x64, macOS 13+ on Intel and Apple Silicon, and Linux x64, with Python 3.11/3.12. Intel Macs use PyTorch 2.2.2, torchvision 0.17.2 and NumPy 1.26.4 because the newer pinned PyTorch has no Intel Mac wheel. Other supported platforms use PyTorch 2.7.0 and torchvision 0.22.0. Inference deliberately uses CPU for consistency.
+
+Linux execution was tested here. Native Windows/macOS runs remain pending. The included GitHub Actions workflow runs the core suite and launch checks across all four platforms when pushed, with optional real model checks available through **Run workflow**. Windows ARM is not supported by this setup.
+
+## Training
+
+A real five-epoch COCO8 fine-tuning run is included in `training/demo/`. The UI labels it **experimental**. Its validation mAP50–95 decreased from 0.4335 to 0.4096, so pretrained YOLO11n remains the default. Four training and four validation images verify the training path; they do not establish improved accuracy, and the original model already saw COCO during pretraining.
+
+After model setup, reproduce the experiment from the project root:
+
+```bash
+python -m visionlab.train --demo --epochs 5 --output training/my-run
+```
+
+For your own labeled dataset:
+
+```bash
+python -m visionlab.train --data /path/to/data.yaml --epochs 30 --output training/custom-run
+```
+
+Use a local YOLO detection dataset with `train`, `val` and `names`. The trainer rejects executable download entries and overlapping image content across these splits. Keep a separate test set for evaluating a model you intend to use. A custom run writes its checkpoint and report to the selected folder; it does not silently replace the UI detector. See `training/demo/README.md` for the included experiment.
+
+## Workspaces
+
+| Workspace | What it does | Downloads |
+|---|---|---|
+| Image Lab | Brightness, contrast, saturation, sharpness, grayscale, Gaussian blur, Canny edges and thresholding | PNG |
+| Object Detection | YOLO11n, YOLO11s or the experimental training demo, resolution/overlap controls, bounding boxes, labels, confidence scores and class counts | Annotated PNG and JSON |
+| Background Removal | u2netp foreground segmentation through ONNX Runtime, with optional solid color | Composited PNG, transparent PNG and JSON |
+| Video Lab | Metadata and sampled edge/detection frames, with actual frame-count progress | First-frame preview, JSON and MJPEG AVI when encoding succeeds |
+
+Choose a file, set the controls and press the main action button. Results always start from the uploaded original. Reset restores the controls and clears the current result while keeping the original. Switching between the three image tools reuses your chosen image.
+
+The About & models panel distinguishes installed packages from successful inference. It shows the last run, inference time and detector classes after a real run. Inference time excludes model loading and downloads. A package being installed does not mean its weights are available.
+
+## Architecture
+
+`index.html` (inline CSS and JavaScript, no build step) → same-origin FastAPI routes → reusable `visionlab` modules.
+
+The notebook independently imports those modules. There is no uploaded-code or notebook-execution endpoint. HTML never executes Python directly.
+
+Core image adjustments run in a thread so the event loop remains responsive. Model requests and video decoding run in disposable subprocesses. Each subprocess is terminated after 180 seconds. Model instances are lazy and cached within that process, including across video frames; separate requests reload them. This trades some startup speed for bounded process lifetime and clean resource release.
+
+One processing request runs at a time. Concurrent requests receive HTTP 429. Video submission returns a job ID; the browser polls its status and reads genuine completed-frame counts. Video exports are temporary, expire 30 minutes after completion, and may be evicted sooner after eight retained jobs. Stopping the server deletes its temporary directory. Image responses are returned directly, without a retained server-side gallery.
+
+## Limits and behavior
+
+- Images: PNG, JPEG or WebP; at most 12 MiB and 12 million pixels, with each side at most 8,192 pixels. Content is decoded and checked, rather than trusting MIME headers. EXIF orientation is applied. Animated inputs use their first frame; metadata is not preserved in output.
+- Video: MP4, MOV, AVI or WebM containers with a locally supported codec; at most 60 MiB, 60 seconds, 3,600 frames and 1,920 pixels on the long side and 1,080 on the short side (portrait or landscape). Invalid or missing metadata is rejected. No entire video is loaded into memory.
+- Sampling: every 1–120 source frames; at most 60 samples. The processor stops when the selected sample limit is reached. Results do not necessarily cover the whole clip.
+- Export: sampled frames only, resized to at most 960 pixels on the longest side, with the sample-adjusted frame rate. MJPEG AVI has no audio; download and open in VLC or another compatible player. An encoder failure leaves the analysis report available.
+- YOLO: pretrained COCO classes, up to 100 detections per sampled image. Small, occluded and unfamiliar objects may be missed. Confidence scores are estimates. Counts across frames are not tracked unique objects.
+- Segmentation: u2netp is a compact foreground model. Hair, glass, shadows and fine edges may need manual cleanup.
+- This is a single-user localhost project, without accounts or authentication. Keep the default localhost binding. Public hosting requires a deployment design with authentication, rate limits, storage isolation and reverse-proxy upload limits.
+- A subprocess timeout bounds model/codec work, but is not a complete security sandbox or a hard memory quota. Use trusted local inputs.
+
+## API
+
+Interactive request schemas: **http://127.0.0.1:8000/docs**.
+
+| Method | Route | Input / result |
+|---|---|---|
+| GET | `/` | Main `index.html` |
+| GET | `/api/health` | Server status and busy flag |
+| GET | `/api/models` | Installed packages and last model results |
+| POST | `/api/process` | Multipart `file`, JSON string `options`; returns `image/png` |
+| POST | `/api/detect` | Multipart `file`, JSON string `options` with `confidence`; returns PNG data URI + detection metadata |
+| POST | `/api/remove-background` | Multipart `file`, optional `background` hex color; returns output and transparent PNG data URIs |
+| POST | `/api/video` | Multipart `file`, JSON string `options`; returns HTTP 202 and a job ID |
+| GET | `/api/video/{job_id}` | State, progress, results or failure message |
+| GET | `/api/video/{job_id}/preview` | First processed sample PNG |
+| GET | `/api/video/{job_id}/report` | Frame report JSON |
+| GET | `/api/video/{job_id}/download` | Sampled AVI, when supported |
+
+Image options: `brightness` 0–2, `contrast` / `saturation` / `sharpness` 0–3 (all default 1), `grayscale` boolean, `blur` integer 0–20, `mode` `none` / `edges` / `threshold`, `threshold` integer 0–255 (default 128). Blur radius maps to kernel size `2 * blur + 1`.
+
+Detection: `confidence` 0.05–0.95 (default 0.35), `model` `yolo11n`, `yolo11s` or `demo` (default `yolo11n`), `image_size` 640 / 960 / 1280 (default 640), and `iou` 0.1–0.9 (default 0.5). Lower IoU suppresses more overlapping detections of the same class. Higher resolutions can help with smaller objects but take longer; results depend on the image. Video uses the same detection settings and adds `sample_every` 1–120 (default 10), `max_samples` 1–60 (default 30), and `operation` `edges` or `detect` (default `edges`).
+
+Errors use `{"error":{"message":"..."}}`, with field details for standard FastAPI validation. Video failures after submission appear as `state: "failed"` with an `error` message on the job status route. Status codes include 413 (too large), 422 (invalid input), 429 (busy), 503 (model unavailable), and 504 (worker timeout).
+
+Example:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/process \
+  -F 'file=@photo.jpg' \
+  -F 'options={"contrast":1.2,"saturation":0.8}' \
+  --output processed.png
+```
+
+## Notebook
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m ipykernel install --user --name visionlab --display-name "Python (VisionLab)"
+python -m jupyter lab notebooks/VisionLab_Computer_Vision.ipynb
+```
+
+Select the VisionLab kernel. Run All creates a synthetic image, compares eight processing variants and analyzes a temporary synthetic video. The optional model cells are disabled by default; supply `assets/sample.jpg` and set `RUN_MODELS = True` to execute them. Direct notebook model calls do not have the web worker timeout.
+
+## Tests
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pytest -q
+python scripts/check_frontend.py  # needs Node.js for JavaScript syntax checking
+python scripts/smoke_launch.py
+```
+
+Core tests run without model weights or network access. They cover transformations, alpha and dimension preservation, validation, response types, page routing, busy handling, model failure responses, mocked model success contracts and a real sampled-video round trip. The notebook can be executed with nbclient.
+
+For real model integration tests, prepare the weights and set the following environment variables to a local photo:
+
+```bash
+# macOS / Linux
+VISIONLAB_MODEL_TESTS=1 VISIONLAB_SAMPLE_IMAGE=/path/to/photo.jpg python -m pytest -q
+```
+
+```bat
+rem Windows Command Prompt
+set VISIONLAB_MODEL_TESTS=1
+set VISIONLAB_SAMPLE_IMAGE=C:\path\to\photo.jpg
+python -m pytest -q
+```
+
+The four opt-in checks exercise both detector sizes, background removal and video detection through the actual API. The normal test command skips these checks so it can run without model downloads. See `VERIFICATION.md` for the checks actually performed on this release.
+
+Dependencies are pinned to a defined baseline, not a claim that they are the latest releases. Review upstream updates before deploying. `requirements-models.txt` is separate to keep the core install small. Both detector choices, background removal and video detection have been exercised with real weights on Linux. See the verification report for the sample, results and remaining platform limits.
+
+## Troubleshooting
+
+| Problem | What to check |
+|---|---|
+| Page loads but tools do not work | Use the localhost URL from the running server, not a file URL or GitHub Pages. |
+| Missing module | Activate `.venv`; use `python -m pip`, not a pip from another Python installation. |
+| Linux cannot create a virtual environment | Install your distribution's Python venv package. |
+| OpenCV reports a missing system library | Install your distribution's OpenGL/GLib runtime libraries; server images may omit them. |
+| Model unavailable | Install optional requirements, check network access and cache permissions, then retry. |
+| Model download exceeds deadline | Run `python -m visionlab.setup_models --small` before opening the web app. |
+| Browser will not preview a video | Its codec may still work in OpenCV. Try the analysis or convert the source to H.264 MP4. |
+| Video export unavailable | Read the report; the local OpenCV build may lack a working MJPEG writer. |
+| Port 8000 already in use | Stop the other process or launch Uvicorn manually with `--port 8001`. |
+| Windows Python launcher unavailable | Install Python 3.11/3.12 with the launcher, or follow manual setup using `python`. |
+
+## Repository layout
+
+```text
+VisionLab/
+  index.html                 Responsive UI with inline CSS and JavaScript
+  backend/                   FastAPI routes and disposable workers
+  visionlab/                 Processing, models, setup and training modules
+  notebooks/                 Companion experiments
+  training/demo/             Trained checkpoint, metrics and license
+  scripts/                   Frontend and live-server checks
+  tests/                     Unit and API integration tests
+  .github/workflows/         Windows, macOS and Linux verification matrix
+  run_windows.bat            Windows launcher
+  run_macos.command          macOS launcher
+  run_mac_linux.sh           macOS/Linux terminal launcher
+  requirements*.txt          Core, optional model and development dependencies
+```
+
+## Licensing and dependencies
+
+No project license has been selected, so this repository deliberately has no `LICENSE` file and does not grant a general open-source license. Choose an appropriate license before offering reuse or distributing an integrated model application.
+
+Upstream code and weights keep their own terms. In particular, review [Ultralytics licensing](https://www.ultralytics.com/license) and the [YOLO11 documentation](https://docs.ultralytics.com/models/yolo11/): Ultralytics offers AGPL-3.0 and enterprise licensing options. Do not assume a permissive license on your own files overrides those terms. The app runs u2netp directly with ONNX Runtime rather than depending on the rembg Python package. Its verified weight file is distributed by [rembg](https://github.com/danielgatis/rembg/tree/v2.0.65). Review that model distribution, the [U²-Net model source](https://github.com/xuebinqin/U-2-Net), and the licenses distributed with OpenCV, Pillow, NumPy, FastAPI, PyTorch and ONNX Runtime. Package-code and pretrained-weight permissions may differ. The download includes the experimental checkpoint under `training/demo/`, with its upstream AGPL-3.0 license. Other pretrained weights download separately. The default `.gitignore` excludes checkpoint files from Git; use a release attachment or reproduce training when sharing the source.
+
+## Put it on GitHub
+
+Suggested repository name: `VisionLab`  
+Description: `A local computer vision studio for image editing, YOLO object detection, background removal and sampled video analysis.`  
+Topics: `python`, `computer-vision`, `fastapi`, `opencv`, `yolo`, `image-processing`, `jupyter-notebook`, `vanilla-javascript`
+
+Create an empty repository under **RippedPaper**, then run from this folder:
+
+```bash
+git init
+git add .
+git commit -m "Add VisionLab Studio"
+git branch -M main
+git remote add origin https://github.com/RippedPaper/VisionLab.git
+git push -u origin main
+```
+
+Review the staged files before committing. Keep private photos, video files, caches, virtual environments and model weights out of Git. GitHub stores the project source; it does not run this FastAPI application through GitHub Pages.

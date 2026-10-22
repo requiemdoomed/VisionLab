@@ -1,0 +1,56 @@
+name: Verify VisionLab
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      model_tests:
+        description: Download weights and run real model checks on all platforms
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  core:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-latest, macos-14, macos-15-intel]
+        python: ['3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install -r requirements.txt pytest==8.3.5 httpx==0.28.1 PyYAML==6.0.2
+      - run: python -m pytest -q
+      - run: python scripts/check_frontend.py
+      - run: python scripts/smoke_launch.py
+      - if: matrix.python == '3.12'
+        run: python scripts/smoke_launch.py --launcher
+  models:
+    if: github.event_name == 'workflow_dispatch' && inputs.model_tests
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-latest, macos-14, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt pytest==8.3.5 httpx==0.28.1 PyYAML==6.0.2
+      - run: python -m visionlab.setup_models --small
+      - name: Fetch public inference sample
+        run: python -c "import urllib.request; urllib.request.urlretrieve('https://raw.githubusercontent.com/ultralytics/ultralytics/main/ultralytics/assets/bus.jpg', 'sample.jpg')"
+      - run: python -m pytest -q
+        env:
+          VISIONLAB_MODEL_TESTS: '1'
+          VISIONLAB_SAMPLE_IMAGE: sample.jpg

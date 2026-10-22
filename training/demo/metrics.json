@@ -1,0 +1,33 @@
+{
+  "base_model": "YOLO11n",
+  "epochs": 5,
+  "image_size": 320,
+  "seed": 42,
+  "device": "cpu",
+  "freeze_layers": 10,
+  "learning_rate": 0.0001,
+  "images": {
+    "train": 4,
+    "val": 4
+  },
+  "baseline_validation": {
+    "metrics/precision(B)": 0.6388454312830859,
+    "metrics/recall(B)": 0.5666666666666667,
+    "metrics/mAP50(B)": 0.663740253411306,
+    "metrics/mAP50-95(B)": 0.43347062781273304,
+    "fitness": 0.45649759037259036
+  },
+  "trained_validation": {
+    "metrics/precision(B)": 0.24613526570048308,
+    "metrics/recall(B)": 0.6666666666666666,
+    "metrics/mAP50(B)": 0.661030726519857,
+    "metrics/mAP50-95(B)": 0.4095754425176908,
+    "fitness": 0.4347209709179074
+  },
+  "checkpoint_sha256": "ed00c201801b7e7cadc73623932b0c55200cadfc880691221134b60cde9989d4",
+  "checkpoint_bytes": 5491994,
+  "note": "Validation selects the checkpoint; this is not an independent test set. A small demo does not establish general accuracy.",
+  "dataset": "COCO8: four training and four validation images",
+  "default_model_changed": false,
+  "pretraining_overlap_note": "COCO8 images come from COCO train2017, which is used by the original pretrained model. The validation split is separate only from this fine-tuning run."
+}

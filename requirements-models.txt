@@ -1,0 +1,9 @@
+-r requirements.txt
+ultralytics==8.3.128
+onnxruntime==1.21.1
+
+# Keep the torch/torchvision pair compatible across installs.
+torch==2.2.2; sys_platform == "darwin" and platform_machine == "x86_64"
+torch==2.7.0; sys_platform != "darwin" or platform_machine != "x86_64"
+torchvision==0.17.2; sys_platform == "darwin" and platform_machine == "x86_64"
+torchvision==0.22.0; sys_platform != "darwin" or platform_machine != "x86_64"

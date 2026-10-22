@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="author" content="Swayam Shakya"><meta name="description" content="A local workspace for image processing, object detection and video experiments.">
+  <title>VisionLab Studio</title>
+<style>
+:root{color-scheme:dark;--bg:#09111e;--panel:#101c2c;--line:#253348;--text:#e7edf4;--muted:#91a2b9;--mint:#8be8ce;--cyan:#73c9e8}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% 0%,#132c3c 0,transparent 40%),var(--bg);font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}button,input,select{font:inherit}button,a,input,select{touch-action:manipulation}button,a{transition:background .18s,border-color .18s}button,a.file-button{cursor:pointer}a{color:var(--mint);text-decoration:none}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}header,footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 4.5%;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:700;color:var(--text)}.brand .muted{font-weight:400}.brand-mark{border:1px solid #478d88;border-radius:10px;background:#193e40;padding:3px 9px;color:var(--mint);font-size:23px}.brand-mark span{font-size:13px}.header-right{display:flex;gap:20px;align-items:center}.muted,.help,.small{color:var(--muted)}.small{font-size:10px;letter-spacing:1px}.badge{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:1px;border:1px solid #2b4853;padding:6px 10px;border-radius:20px;color:#a7d8d4;white-space:nowrap}.badge:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--mint)}main{max-width:1600px;padding:48px 4.5% 30px;margin:auto}.intro{display:flex;align-items:center;justify-content:space-between;gap:20px}.eyebrow{font-size:10px;letter-spacing:2px;color:var(--mint);font-weight:600}h1{font-size:clamp(30px,3.4vw,49px);letter-spacing:-1.8px;line-height:1.15;margin:12px 0 14px;font-weight:650}h1 span{color:var(--mint)}.intro p{color:var(--muted);font-size:15px}.edition{font-size:10px;letter-spacing:2px;color:var(--muted)}.tabs{display:flex;gap:6px;padding:5px;background:#0d1827;border:1px solid var(--line);border-radius:12px;margin:28px 0;max-width:760px}.tab{flex:1;border:0;background:transparent;color:var(--muted);border-radius:7px;padding:11px 14px;white-space:nowrap}.tab.active{color:var(--mint);background:#193139;box-shadow:inset 0 0 0 1px #35565b}.studio{display:grid;grid-template-columns:290px minmax(0,1fr);gap:25px;align-items:start}.panel{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}.controls{padding:22px}.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:20px}h2{font-size:16px;font-weight:600;margin:0}h3{font-size:14px;font-weight:600}.panel-heading .small{font-size:8px}.drop-zone{border:1px dashed #3f5967;border-radius:10px;text-align:center;padding:22px 10px;background:#122431;display:flex;align-items:center;flex-direction:column;gap:10px}.drop-zone.dragging{border-color:var(--mint);background:#1b3b44}.upload-icon{font-size:23px;color:var(--mint);border-radius:10px;background:#25434a;width:38px}.drop-zone strong{font-size:12px}.drop-zone p{font-size:10px;color:var(--muted);margin:0}.file-button{display:inline-block;background:#223c47;border:1px solid #3b6066;border-radius:7px;padding:5px 16px;cursor:pointer;color:var(--mint)}#file{width:1px;height:1px;opacity:0;position:absolute}#drop-zone:focus-within{outline:2px solid var(--cyan)}.file-name{font-size:11px;overflow-wrap:anywhere;color:var(--muted);margin:12px 0 20px}fieldset{border:0;padding:0;margin:0;min-width:0}legend{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}label{display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-top:15px}output{color:var(--muted);font-variant-numeric:tabular-nums}input[type=range]{width:100%;height:4px;accent-color:var(--mint);margin:14px 0 10px;cursor:pointer}input[type=checkbox]{accent-color:var(--mint)}input[type=number],select{display:block;width:100%;background:#0e1827;color:var(--text);border:1px solid #344258;border-radius:7px;padding:9px;margin:9px 0}.check{justify-content:flex-start;gap:8px}.help{font-size:12px;line-height:1.7}input[type=color]{margin-top:10px;width:100%;height:38px;border:1px solid var(--line);background:transparent}.actions{display:flex;gap:10px;border-top:1px solid var(--line);padding-top:20px;margin-top:20px}.primary{display:inline-block;background:var(--mint);border:1px solid var(--mint);color:#0a2829;border-radius:8px;padding:10px 14px;font-size:12px;font-weight:650;text-align:center}.primary:hover{background:#b6f7e5}.quiet{display:inline-block;border:1px solid var(--line);background:#142235;border-radius:8px;color:var(--text);padding:8px 12px;font-size:12px;text-align:center}.quiet:hover{border-color:#648a94}.actions .primary{flex:1}.workspace-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:6px 0 13px}.workspace-heading h2{margin-top:8px;font-size:19px;letter-spacing:-.4px}#notice{font-size:12px;color:var(--muted);padding:10px 0 18px;overflow-wrap:anywhere}#notice.error{color:#ffb7ae}#notice.success{color:var(--mint)}.previews{display:grid;grid-template-columns:1fr 1fr;gap:16px}figure{margin:0;min-width:0}figcaption{display:flex;justify-content:space-between;align-items:center;padding:14px 17px;border-bottom:1px solid var(--line);font-size:12px}.preview{height:340px;display:flex;justify-content:center;align-items:center;background:#0d1725;padding:12px}.checker{background-color:#101c2b;background-image:linear-gradient(45deg,#152232 25%,transparent 25%),linear-gradient(-45deg,#152232 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#152232 75%),linear-gradient(-45deg,transparent 75%,#152232 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0}.preview img,.preview video{max-width:100%;max-height:100%;object-fit:contain;border-radius:4px}.empty{text-align:center;color:var(--muted);padding:15px}.empty-symbol{display:block;font-size:40px;color:#5c788e;margin-bottom:15px}.empty strong{display:block;font-size:14px;font-weight:500;color:#bac8d7}.empty p{font-size:12px}.quick-start{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;border-top:1px solid var(--line);padding-top:27px;margin-top:32px}.quick-start span{font-size:11px;color:var(--mint);border:1px solid #2b4b54;border-radius:6px;padding:4px 7px}.quick-start h3{margin:14px 0 6px}.quick-start p{font-size:12px;color:var(--muted);margin:0}.downloads{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}.results{padding:18px;margin-top:20px}.results p{font-size:12px;color:var(--muted)}.results-list{max-height:230px;overflow:auto}.result-row{display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding:9px 0;font-size:12px}.result-row span:last-child{color:var(--mint)}progress{width:100%;accent-color:var(--mint);height:8px;margin:0 0 18px}footer{margin:20px 4.5% 0;padding:22px 0;border-top:1px solid var(--line);border-bottom:0;font-size:11px}dialog{max-width:620px;width:calc(100% - 32px);background:var(--panel);border:1px solid #3b5268;border-radius:16px;padding:28px;color:var(--text)}dialog::backdrop{background:#020811c9;backdrop-filter:blur(4px)}.dialog-heading{display:flex;justify-content:space-between;align-items:center}dialog p{color:var(--muted);font-size:13px}.model-card{border-top:1px solid var(--line);padding:12px 0}.model-card strong{color:var(--mint)}.model-card details{font-size:12px;color:var(--muted)}button:disabled,input:disabled,select:disabled{opacity:.45;cursor:not-allowed}[hidden]{display:none!important}.busy .drop-zone{pointer-events:none;opacity:.5}@media(min-width:1500px){.preview{height:410px}}@media(max-width:1100px){.studio{grid-template-columns:260px minmax(0,1fr);gap:18px}.controls{padding:17px}.preview{height:280px}.workspace-heading .badge{display:none}.edition{display:none}}@media(max-width:800px){header{padding:18px 5%}.brand{font-size:18px;gap:7px}.header-right{gap:8px}.header-right .badge{display:none}main{padding:30px 5%}.studio{grid-template-columns:1fr}.controls{padding:20px}.drop-zone{padding:17px}.tabs{overflow-x:auto}.tab{font-size:12px;padding:10px}.preview{height:300px}.intro p{font-size:13px}.quick-start{gap:15px}}@media(max-width:480px){.previews{grid-template-columns:1fr}.preview{height:260px}.brand .muted{display:none}.workspace-heading h2{font-size:17px}.quick-start{grid-template-columns:1fr}.quick-start>div{display:grid;grid-template-columns:34px 1fr;column-gap:12px}.quick-start span{grid-row:span 2;align-self:start}.quick-start h3{margin:0}.quick-start p{grid-column:2}footer{align-items:start;font-size:10px}.tabs{margin:22px 0}.tab{flex:none}.header-right .quiet{font-size:11px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* A single-file interface: system fonts, native controls and no runtime dependencies. */
+.connection-help{padding:20px;margin-top:22px}.connection-help p{color:var(--muted);font-size:13px}
+.preview-zoom{padding:2px 8px;margin-left:auto;margin-right:10px}#preview-dialog{max-width:95vw;width:1100px}#large-preview{display:block;max-width:100%;max-height:80vh;object-fit:contain;margin:16px auto 0}
+html[data-theme="light"]{color-scheme:light;--bg:#f3f6f8;--panel:#fff;--line:#d3dde4;--text:#142c3a;--muted:#526775;--mint:#167c66;--cyan:#167b9b}
+html[data-theme="light"] body{background:var(--bg)}html[data-theme="light"] .quiet,html[data-theme="light"] select,html[data-theme="light"] input[type=number],html[data-theme="light"] .preview{background:#f0f5f7;color:var(--text)}
+html[data-theme="light"] .tabs{background:#e6edf0}html[data-theme="light"] .tab.active,html[data-theme="light"] .drop-zone{background:#e1f1eb}html[data-theme="light"] .primary{color:white}html[data-theme="light"] .badge{color:#25675d}html[data-theme="light"] .empty strong{color:var(--text)}html[data-theme="light"] .checker{background-color:#e5ebee;background-image:linear-gradient(45deg,#f7fafb 25%,transparent 25%),linear-gradient(-45deg,#f7fafb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f7fafb 75%),linear-gradient(-45deg,transparent 75%,#f7fafb 75%)}
+@media(max-width:800px){.tabs{display:grid;grid-template-columns:1fr 1fr;overflow:visible;max-width:none}.tab{white-space:normal}.header-right{gap:5px}.header-right .quiet{padding:7px 8px}header{flex-wrap:wrap}.brand{flex-shrink:0}.intro{margin-top:0}.controls{padding:17px}.quick-start{margin-top:24px}}
+@media(max-width:480px){main{padding-top:24px}h1{font-size:31px}.header-right{margin-left:auto}.preview-zoom{padding:3px 8px}.edition{display:none}}
+
+</style>
+</head>
+<body>
+<header><a class="brand" href="/" aria-label="VisionLab home"><span class="brand-mark">V<span>↗</span></span>VisionLab <span class="muted">Studio</span></a><div class="header-right"><span id="connection" class="badge">Connecting…</span><button id="theme-toggle" class="quiet" aria-label="Switch color theme">Light mode</button><button id="about" class="quiet">About & models ↗</button></div></header>
+<main>
+  <div class="intro"><div><div class="eyebrow">IMAGES, VIDEO & COMPUTER VISION</div><h1>Make every detail count<span>.</span></h1><p>A local workspace to adjust images, find objects, and explore video.</p></div><span class="edition">01 / COMPUTER VISION</span></div>
+  <section id="connection-help" class="panel connection-help" hidden><h2>Start your local studio</h2><p>Run <code>run_windows.bat</code> on Windows or <code>bash run_mac_linux.sh</code> on macOS/Linux. Then open the studio from the running server.</p><a class="primary" href="http://127.0.0.1:8000">Open local studio ↗</a> <button id="retry-connection" class="quiet">Check connection</button></section>
+  <nav class="tabs" aria-label="Workspaces">
+    <button class="tab active" data-workspace="adjust" aria-pressed="true">Image Lab</button>
+    <button class="tab" data-workspace="detect" aria-pressed="false">Object Detection</button>
+    <button class="tab" data-workspace="remove" aria-pressed="false">Background Removal</button>
+    <button class="tab" data-workspace="video" aria-pressed="false">Video Lab</button>
+  </nav>
+  <div class="studio">
+    <aside class="panel controls">
+      <div class="panel-heading"><h2 id="tool-title">Image adjustments</h2><span class="small muted">CONTROLS</span></div>
+      <div id="drop-zone" class="drop-zone"><span class="upload-icon" aria-hidden="true">↥</span><strong>Choose a file to work with</strong><p id="upload-hint">PNG, JPG, WebP · up to 12 MiB</p><label class="file-button" for="file">Choose an image</label><input id="file" type="file" accept="image/png,image/jpeg,image/webp"><span class="small muted">or drop it here</span><button id="sample-image" type="button" class="quiet">Try a sample image</button></div>
+      <p id="file-name" class="file-name">No file selected</p>
+      <form id="controls-form">
+        <fieldset id="adjust-controls"><legend>Adjustments</legend>
+          <label for="brightness">Brightness <output id="brightness-value">1.00</output></label><input id="brightness" type="range" min="0" max="2" step="0.05" value="1">
+          <label for="contrast">Contrast <output id="contrast-value">1.00</output></label><input id="contrast" type="range" min="0" max="3" step="0.05" value="1">
+          <label for="saturation">Saturation <output id="saturation-value">1.00</output></label><input id="saturation" type="range" min="0" max="3" step="0.05" value="1">
+          <label for="sharpness">Sharpness <output id="sharpness-value">1.00</output></label><input id="sharpness" type="range" min="0" max="3" step="0.05" value="1">
+          <label for="blur">Gaussian blur <output id="blur-value">0</output></label><input id="blur" type="range" min="0" max="20" step="1" value="0">
+          <label class="check"><input id="grayscale" type="checkbox"> Grayscale</label>
+          <label for="mode">Finish</label><select id="mode"><option value="none">Natural image</option><option value="edges">Edge detection</option><option value="threshold">Black & white threshold</option></select>
+          <div id="threshold-field" hidden><label for="threshold">Threshold <output id="threshold-value">128</output></label><input id="threshold" type="range" min="0" max="255" value="128"></div>
+        </fieldset>
+        <fieldset id="detection-controls" hidden><legend>Detection settings</legend><label for="detector-model">Detector</label><select id="detector-model"><option value="yolo11n">YOLO11n · faster</option><option value="yolo11s">YOLO11s · larger model</option><option value="demo">COCO8 training demo · experimental</option></select><label for="image-size">Detection resolution</label><select id="image-size"><option value="640">640 px · standard</option><option value="960">960 px · more detail</option><option value="1280">1280 px · slowest</option></select><label for="iou">Overlap threshold <output id="iou-value">0.50</output></label><input id="iou" type="range" min="0.1" max="0.9" step="0.05" value="0.5"><label for="confidence">Confidence <output id="confidence-value">0.35</output></label><input id="confidence" type="range" min="0.05" max="0.95" step="0.05" value="0.35"><p class="help">Lower confidence includes more uncertain results. Lower overlap removes more duplicate boxes. Larger models and resolutions cost more CPU time; they do not guarantee a better result. The pretrained models recognize 80 common object classes. The COCO8 option is a tiny training demonstration, not an improved general-purpose model.</p></fieldset>
+        <fieldset id="removal-controls" hidden><legend>Background settings</legend><label class="check"><input id="solid" type="checkbox"> Add a solid background</label><label for="background">Background color</label><input id="background" type="color" value="#172438" disabled><p class="help">The transparent PNG is always available, even when you add a color.</p></fieldset>
+        <fieldset id="video-controls" hidden><legend>Video settings</legend><label for="video-operation">Frame operation</label><select id="video-operation"><option value="edges">Edge detection · no model needed</option><option value="detect">Object detection · selected YOLO model</option></select><label for="sample-every">Sample every N frames</label><input id="sample-every" type="number" min="1" max="120" value="10"><label for="max-samples">Maximum samples</label><input id="max-samples" type="number" min="1" max="60" value="30"><p class="help">Up to 60 seconds, 3,600 source frames, and 1920 × 1080 pixels per frame. Exports contain sampled frames without audio.</p></fieldset>
+        <div class="actions"><button id="run" type="submit" class="primary" disabled>Apply adjustments ↗</button><button id="reset" type="button" class="quiet">Reset</button></div>
+      </form>
+    </aside>
+    <section class="workspace" aria-label="Image previews and results">
+      <div class="workspace-heading"><div><span class="eyebrow">YOUR WORKSPACE</span><h2 id="workspace-title">Small changes. A different perspective.</h2></div><span class="badge">LOCAL PROCESSING</span></div>
+      <div id="notice" role="status" aria-live="polite">Choose a file to begin. Your originals stay unchanged.</div>
+      <progress id="progress" hidden aria-label="Video frames processed"></progress>
+      <div class="previews">
+        <figure class="panel"><figcaption><span>Original</span><button id="zoom-original" class="quiet preview-zoom" disabled aria-label="Enlarge original image">↗</button><span id="source-meta" class="small muted">SOURCE</span></figcaption><div class="preview"><div id="original-empty" class="empty"><span class="empty-symbol">◩</span><strong>Your starting point</strong><p>Upload a photo or short video.</p></div><img id="original" alt="Original image" hidden><video id="original-video" controls hidden></video></div></figure>
+        <figure class="panel"><figcaption><span id="result-title">Processed</span><button id="zoom-result" class="quiet preview-zoom" disabled aria-label="Enlarge processed image">↗</button><span id="result-meta" class="small muted">OUTPUT</span></figcaption><div class="preview checker"><div id="result-empty" class="empty"><span class="empty-symbol">⌘</span><strong>A fresh perspective</strong><p>Your result will appear here.</p></div><img id="result" alt="Processed result" hidden></div></figure>
+      </div>
+      <div id="downloads" class="downloads" hidden><a id="download-image" class="primary" download="visionlab-result.png" hidden>Download PNG ↓</a><a id="download-transparent" class="quiet" download="visionlab-transparent.png" hidden>Transparent PNG ↓</a><a id="download-report" class="quiet" download="visionlab-results.json" hidden>Results JSON ↓</a><a id="download-video" class="quiet" hidden>Sampled video ↓</a></div>
+      <section id="results-panel" class="panel results" hidden><h3 id="results-title">Results</h3><p id="results-summary"></p><div id="results-list" class="results-list"></div></section>
+      <div class="quick-start"><div><span>01</span><h3>Choose your source</h3><p>Pick an image or a short video. Your original stays unchanged.</p></div><div><span>02</span><h3>Make it your own</h3><p>Adjust the controls, choose a model, then run the tool.</p></div><div><span>03</span><h3>Take it with you</h3><p>Save your image, transparent cutout, or video report.</p></div></div>
+    </section>
+  </div>
+</main>
+<footer><span>VisionLab Studio <span class="muted">/ by Swayam Shakya</span></span><a href="https://github.com/RippedPaper" target="_blank" rel="noopener noreferrer">RippedPaper ↗</a></footer>
+<dialog id="model-dialog"><div class="dialog-heading"><h2>Inside the studio</h2><button id="close-dialog" class="quiet" aria-label="Close model information">✕</button></div><p>VisionLab Studio is a computer vision project by Swayam Shakya. The browser talks to a local Python backend; the companion notebook uses the same processing modules.</p><div id="model-info">Loading model information…</div><p class="help">Model features require the optional dependencies and a first-use weights download. No paid API or GPU is needed. Model results are estimates, not ground truth.</p><a class="quiet" href="/docs" target="_blank" rel="noopener">Explore the API ↗</a></dialog>
+<dialog id="preview-dialog"><div class="dialog-heading"><h2 id="preview-heading">Image preview</h2><button id="close-preview" class="quiet" aria-label="Close enlarged preview">✕</button></div><img id="large-preview" alt="Enlarged image preview"></dialog>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const state = {workspace: 'adjust', image: null, video: null, busy: false, online: false, urls: [], originalUrl: null};
+const labels = {
+  adjust: ['Image adjustments', 'Small changes. A different perspective.', 'Apply adjustments ↗'],
+  detect: ['Object detection', 'Find the familiar in every frame.', 'Detect objects ↗'],
+  remove: ['Background removal', 'Give your subject some space.', 'Remove background ↗'],
+  video: ['Video analysis', 'Take a closer look, frame by frame.', 'Analyze video ↗']
+};
+function notice(message, type = '') {
+  $('notice').textContent = message;
+  $('notice').className = type;
+}
+function currentFile() { return state.workspace === 'video' ? state.video : state.image; }
+function setBusy(value) {
+  state.busy = value;
+  document.body.classList.toggle('busy', value);
+  document.querySelectorAll('#controls-form input, #controls-form select, #controls-form button, .tab, #file').forEach(el => { el.disabled = value; });
+  document.querySelectorAll('#controls-form fieldset').forEach(fieldset => { fieldset.disabled = value || fieldset.hidden; });
+  $('background').disabled = value || !$('solid').checked;
+  $('run').disabled = value || !currentFile() || !state.online;
+  $('sample-image').disabled = value;
+  $('run').textContent = value ? 'Processing…' : labels[state.workspace][2];
+}
+function clearResult() {
+  state.urls.forEach(URL.revokeObjectURL);
+  state.urls = [];
+  $('result').hidden = true;
+  $('zoom-result').disabled = true;
+  $('result').removeAttribute('src');
+  $('result-empty').hidden = false;
+  $('result-meta').textContent = 'OUTPUT';
+  $('results-panel').hidden = true;
+  $('results-list').replaceChildren();
+  $('downloads').hidden = true;
+  $('progress').hidden = true;
+  ['download-image', 'download-transparent', 'download-report', 'download-video'].forEach(id => {
+    $(id).hidden = true;
+    $(id).removeAttribute('href');
+  });
+}
+function showOriginal() {
+  if (state.originalUrl) URL.revokeObjectURL(state.originalUrl);
+  $('original').hidden = true;
+  $('original-video').hidden = true;
+  $('original-video').pause();
+  $('original-video').removeAttribute('src');
+  $('original-video').load();
+  const file = currentFile();
+  $('original-empty').hidden = !!file;
+  $('file-name').textContent = file ? `${file.name} · ${(file.size / 1048576).toFixed(2)} MiB` : 'No file selected';
+  $('source-meta').textContent = file ? 'UPLOADED' : 'SOURCE';
+  if (file) {
+    state.originalUrl = URL.createObjectURL(file);
+    const preview = state.workspace === 'video' ? $('original-video') : $('original');
+    preview.src = state.originalUrl;
+    preview.hidden = false;
+  }
+  $('zoom-original').disabled = !file || state.workspace === 'video';
+  setBusy(false);
+}
+function switchWorkspace(name) {
+  if (state.busy) return;
+  state.workspace = name;
+  document.querySelectorAll('.tab').forEach(button => {
+    const active = button.dataset.workspace === name;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  $('tool-title').textContent = labels[name][0];
+  $('workspace-title').textContent = labels[name][1];
+  $('result-title').textContent = name === 'video' ? 'First processed sample' : 'Processed';
+  $('adjust-controls').hidden = name !== 'adjust';
+  $('detection-controls').hidden = name !== 'detect' && !(name === 'video' && $('video-operation').value === 'detect');
+  $('removal-controls').hidden = name !== 'remove';
+  $('video-controls').hidden = name !== 'video';
+  const video = name === 'video';
+  $('sample-image').hidden = name !== 'adjust';
+  $('file').accept = video ? '.mp4,.mov,.avi,.webm' : 'image/png,image/jpeg,image/webp';
+  $('upload-hint').textContent = video ? 'MP4, MOV, AVI, WebM · up to 60 MiB' : 'PNG, JPG, WebP · up to 12 MiB';
+  document.querySelector('.file-button').textContent = video ? 'Choose a video' : 'Choose an image';
+  $('file').value = '';
+  clearResult();
+  showOriginal();
+  notice(video ? 'Start with edge detection; it needs no model download.' : 'Settings apply to your original image each time.');
+}
+function chooseFile(file) {
+  if (!file || state.busy) return;
+  const video = state.workspace === 'video';
+  const extension = file.name.split('.').pop().toLowerCase();
+  if (!(video ? ['mp4','mov','avi','webm'] : ['png','jpg','jpeg','webp']).includes(extension)) {
+    notice('That file type is not supported in this workspace.', 'error'); return;
+  }
+  if (file.size > (video ? 60 : 12) * 1048576 || !file.size) {
+    notice(`Choose a nonempty file smaller than ${video ? 60 : 12} MiB.`, 'error'); return;
+  }
+  state[video ? 'video' : 'image'] = file;
+  clearResult();
+  showOriginal();
+  notice('Ready when you are. Choose your settings, then run the tool.');
+}
+function addDownload(id, url) {
+  $(id).href = url;
+  $(id).hidden = false;
+  $('downloads').hidden = false;
+}
+function blobUrl(blob) {
+  const url = URL.createObjectURL(blob);
+  state.urls.push(url);
+  return url;
+}
+function showResult(url) {
+  $('result').src = url;
+  $('zoom-result').disabled = false;
+  $('result').hidden = false;
+  $('result-empty').hidden = true;
+}
+function reportDownload(data) {
+  addDownload('download-report', blobUrl(new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'})));
+}
+function row(label, value) {
+  const item = document.createElement('div'); item.className = 'result-row';
+  for (const text of [label, value]) { const span = document.createElement('span'); span.textContent = text; item.append(span); }
+  $('results-list').append(item);
+}
+function detectionOptions() {
+  return {confidence: Number($('confidence').value), model: $('detector-model').value,
+    image_size: Number($('image-size').value), iou: Number($('iou').value)};
+}
+async function request(url, options = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), options.method === 'POST' ? 200000 : 30000);
+  let response;
+  try {
+    response = await fetch(url, {...options, signal: controller.signal});
+  } catch (error) {
+    if (error.name === 'AbortError') throw new Error('The server took too long to respond. Check the terminal, then try again.');
+    state.online = false;
+    $('connection-help').hidden = false;
+    $('connection').textContent = 'BACKEND OFFLINE';
+    throw new Error('Cannot reach the backend. Make sure the launch script is still running.');
+  } finally { clearTimeout(timeout); }
+  state.online = true;
+  $('connection-help').hidden = true;
+  $('connection').textContent = 'BACKEND CONNECTED';
+  if (!response.ok) {
+    let message = `Request failed (${response.status}).`;
+    try { const data = await response.json(); message = data.error?.message || message; } catch (_) { /* Non-JSON server response. */ }
+    throw new Error(message);
+  }
+  return response;
+}
+async function pollVideo(statusUrl, jobId) {
+  const deadline = Date.now() + 210000;
+  $('progress').hidden = false;
+  $('progress').removeAttribute('value');
+  while (Date.now() < deadline) {
+    const data = await (await request(statusUrl)).json();
+    const {completed, total} = data.progress;
+    if (total) {
+      $('progress').max = total;
+      $('progress').value = completed;
+      notice(`Processed ${completed} of ${total} planned sample frames.`);
+    } else notice('Inspecting video and preparing processing…');
+    if (data.state === 'failed') throw new Error(data.error);
+    if (data.state === 'complete') {
+      const result = data.result;
+      $('progress').max = result.processed_frames;
+      $('progress').value = result.processed_frames;
+      showResult(`/api/video/${jobId}/preview`);
+      $('result-meta').textContent = `${result.processed_frames} SAMPLES`;
+      $('results-panel').hidden = false;
+      $('results-title').textContent = 'Video analysis';
+      const m = result.metadata;
+      $('results-summary').textContent = `${m.width} × ${m.height} · ${Number(m.fps.toFixed(3))} fps · ${m.duration_seconds}s. ${result.export_note}${result.partial_decode ? ' Warning: decoding ended before all planned samples.' : ''}`;
+      result.samples.forEach(sample => row(`Frame ${sample.frame} · ${sample.seconds}s`, sample.count === undefined ? 'Edges processed' : `${sample.count} detections`));
+      addDownload('download-report', `/api/video/${jobId}/report`);
+      if (result.export_available) addDownload('download-video', `/api/video/${jobId}/download`);
+      notice('Video analysis complete. Download now: results expire after 30 minutes, after eight newer jobs, or when the server stops.', 'success');
+      return;
+    }
+    await new Promise(resolve => setTimeout(resolve, 650));
+  }
+  throw new Error('The video request timed out. Check the server terminal before retrying.');
+}
+async function run(event) {
+  event.preventDefault();
+  if (state.busy || !currentFile()) return;
+  clearResult();
+  setBusy(true);
+  notice(state.workspace === 'adjust' ? 'Applying your adjustments…' : 'Processing… First-time model downloads can take a few minutes.');
+  const body = new FormData(); body.append('file', currentFile());
+  try {
+    if (state.workspace === 'adjust') {
+      const options = {};
+      for (const id of ['brightness','contrast','saturation','sharpness','blur','threshold']) options[id] = Number($(id).value);
+      options.grayscale = $('grayscale').checked; options.mode = $('mode').value;
+      body.append('options', JSON.stringify(options));
+      const blob = await (await request('/api/process', {method:'POST', body})).blob();
+      const url = blobUrl(blob); showResult(url); addDownload('download-image', url);
+      $('result-meta').textContent = 'PNG'; notice('Adjustments applied. Your PNG is ready.', 'success');
+    } else if (state.workspace === 'video') {
+      body.append('options', JSON.stringify({sample_every:Number($('sample-every').value),max_samples:Number($('max-samples').value),operation:$('video-operation').value,...detectionOptions()}));
+      const job = await (await request('/api/video', {method:'POST', body})).json();
+      await pollVideo(job.status_url, job.job_id);
+    } else {
+      if (state.workspace === 'detect') body.append('options', JSON.stringify(detectionOptions()));
+      else body.append('background', $('solid').checked ? $('background').value : '');
+      const path = state.workspace === 'detect' ? '/api/detect' : '/api/remove-background';
+      const data = await (await request(path, {method:'POST', body})).json();
+      showResult(data.image); addDownload('download-image', data.image);
+      $('result-meta').textContent = `${data.inference_ms} ms · CPU`;
+      if (data.transparent_image) addDownload('download-transparent', data.transparent_image);
+      const {image, transparent_image, ...report} = data; reportDownload(report);
+      $('results-panel').hidden = false;
+      $('results-title').textContent = state.workspace === 'detect' ? `${data.count} objects detected` : 'Foreground extracted';
+      $('results-summary').textContent = `${data.model} · CPU · ${data.inference_ms} ms inference (loading time excluded)`;
+      if (data.class_counts) {
+        const summary = Object.entries(data.class_counts).map(([name, count]) => `${name}: ${count}`).join(' · ');
+        if (summary) $('results-summary').textContent += ` · ${summary}`;
+      }
+      (data.detections || []).forEach(item => row(`${item.label} · [${item.box.join(', ')}]`, `${(item.confidence * 100).toFixed(1)}%`));
+      notice(data.count === 0 ? 'No objects met this confidence threshold. Try another image or a lower threshold.' : 'Processing complete. Your result is ready to download.', 'success');
+    }
+  } catch (error) {
+    $('progress').hidden = true;
+    notice(error.message || 'Could not reach the backend. Check that the launch script is still running.', 'error');
+  } finally {
+    setBusy(false);
+    if (window.innerWidth < 800 && !$('result').hidden) $('workspace-title').scrollIntoView({block: 'start'});
+  }
+}
+async function showModels() {
+  $('model-dialog').showModal();
+  $('model-info').textContent = 'Checking model availability…';
+  try {
+    const data = await (await request('/api/models')).json();
+    $('model-info').replaceChildren();
+    for (const model of data.models) {
+      const card = document.createElement('section'); card.className = 'model-card';
+      const title = document.createElement('strong'); title.textContent = model.name; card.append(title);
+      const info = document.createElement('p');
+      info.textContent = `${model.installed ? 'Package installed' : 'Optional package not installed'} · ${model.status} · CPU. ${model.note}`;
+      card.append(info);
+      if (model.last_run?.inference_ms !== undefined) { const p = document.createElement('p'); p.textContent = `Last inference: ${model.last_run.inference_ms} ms`; card.append(p); }
+      if (model.last_run?.message) { const p = document.createElement('p'); p.textContent = model.last_run.message; card.append(p); }
+      if (model.classes.length) {
+        const details = document.createElement('details'); const summary = document.createElement('summary'); summary.textContent = 'Supported classes';
+        const p = document.createElement('p'); p.textContent = model.classes.join(', '); details.append(summary,p); card.append(details);
+      }
+      $('model-info').append(card);
+    }
+    const p = document.createElement('p'); p.textContent = data.lifecycle; $('model-info').append(p);
+  } catch (error) { $('model-info').textContent = error.message; }
+}
+document.querySelectorAll('.tab').forEach(button => button.addEventListener('click', () => switchWorkspace(button.dataset.workspace)));
+$('file').addEventListener('change', event => chooseFile(event.target.files[0]));
+['dragenter','dragover'].forEach(type => $('drop-zone').addEventListener(type, event => {event.preventDefault(); if (!state.busy) $('drop-zone').classList.add('dragging');}));
+['dragleave','drop'].forEach(type => $('drop-zone').addEventListener(type, event => {event.preventDefault(); $('drop-zone').classList.remove('dragging');}));
+$('drop-zone').addEventListener('drop', event => chooseFile(event.dataTransfer.files[0]));
+document.querySelectorAll('input[type=range]').forEach(input => input.addEventListener('input', () => { $(`${input.id}-value`).textContent = input.step === '0.05' ? Number(input.value).toFixed(2) : input.value; }));
+$('mode').addEventListener('change', () => { $('threshold-field').hidden = $('mode').value !== 'threshold'; });
+$('solid').addEventListener('change', () => { $('background').disabled = !$('solid').checked; });
+$('video-operation').addEventListener('change', () => { $('detection-controls').hidden = $('video-operation').value !== 'detect'; setBusy(false); });
+$('controls-form').addEventListener('submit', run);
+$('reset').addEventListener('click', () => {
+  HTMLFormElement.prototype.reset.call($('controls-form'));
+  document.querySelectorAll('input[type=range]').forEach(input => input.dispatchEvent(new Event('input')));
+  $('threshold-field').hidden = true;
+  switchWorkspace(state.workspace);
+  notice('Controls reset. Your original file is ready for another try.');
+});
+$('about').addEventListener('click', showModels);
+$('close-dialog').addEventListener('click', () => $('model-dialog').close());
+$('original').addEventListener('load', () => { $('source-meta').textContent = `${$('original').naturalWidth} × ${$('original').naturalHeight}`; });
+$('original').addEventListener('error', () => notice('The browser could not display this image. Try a different file.', 'error'));
+$('original-video').addEventListener('error', () => { if (state.video && state.workspace === 'video') notice('This browser cannot preview the codec. The backend may still be able to analyze it.'); });
+async function connectBackend() {
+  try {
+    await request('/api/health');
+    notice('Ready. Choose a file or try the sample image.');
+  } catch (error) {
+    state.online = false;
+    $('connection-help').hidden = false;
+    $('connection').textContent = 'BACKEND OFFLINE';
+    notice('The interface is ready. Start the local Python server to process files.', 'error');
+  } finally { setBusy(false); }
+}
+$('retry-connection').addEventListener('click', connectBackend);
+$('sample-image').addEventListener('click', () => {
+  const canvas = document.createElement('canvas'); canvas.width = 720; canvas.height = 480;
+  const context = canvas.getContext('2d');
+  const gradient = context.createLinearGradient(0, 0, 720, 480);
+  gradient.addColorStop(0, '#172d4a'); gradient.addColorStop(1, '#377684');
+  context.fillStyle = gradient; context.fillRect(0, 0, 720, 480);
+  context.fillStyle = '#8be8ce'; context.beginPath(); context.arc(225, 220, 130, 0, Math.PI * 2); context.fill();
+  context.fillStyle = '#efba7b'; context.fillRect(400, 175, 210, 210);
+  canvas.toBlob(blob => { if (blob) chooseFile(new File([blob], 'sample-shapes.png', {type:'image/png'})); });
+});
+function enlarge(id, title) {
+  const source = $(id);
+  if (!source.src || source.hidden) return;
+  $('large-preview').src = source.src;
+  $('preview-heading').textContent = title;
+  $('preview-dialog').showModal();
+}
+$('zoom-original').addEventListener('click', () => enlarge('original', 'Original image'));
+$('zoom-result').addEventListener('click', () => enlarge('result', 'Processed image'));
+$('close-preview').addEventListener('click', () => $('preview-dialog').close());
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  $('theme-toggle').textContent = theme === 'light' ? 'Dark mode' : 'Light mode';
+  try { localStorage.setItem('visionlab-theme', theme); } catch (_) { /* Storage may be unavailable in private browsing. */ }
+}
+$('theme-toggle').addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
+try { applyTheme(localStorage.getItem('visionlab-theme') || 'dark'); } catch (_) { applyTheme('dark'); }
+connectBackend();
+
+</script>
+</body>
+</html>
