@@ -124,7 +124,4 @@ Select the VisionLab kernel. Run All creates a synthetic image, compares eight p
 
 ## Licensing and dependencies
 
-No project license has been selected, so this repository deliberately has no `LICENSE` file and does not grant a general open-source license. Choose an appropriate license before offering reuse or distributing an integrated model application.
-
-
-stores the project source; it does not run this FastAPI application through GitHub Pages.
+Copyright (c) 2026 Swayam Shakya (RippedPaper)
