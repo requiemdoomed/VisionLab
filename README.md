@@ -1,4 +1,4 @@
-# VisionLab Studio
+# [VisionLab Studio](https://requiemdoomed.github.io/VisionLab/)
 
 A local computer vision workspace for editing images, detecting objects, removing backgrounds and exploring short videos.
 
