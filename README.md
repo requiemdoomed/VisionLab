@@ -96,39 +96,6 @@ The About & models panel distinguishes installed packages from successful infere
 - This is a single-user localhost project, without accounts or authentication. Keep the default localhost binding. Public hosting requires a deployment design with authentication, rate limits, storage isolation and reverse-proxy upload limits.
 - A subprocess timeout bounds model/codec work, but is not a complete security sandbox or a hard memory quota. Use trusted local inputs.
 
-## API
-
-Interactive request schemas: **http://127.0.0.1:8000/docs**.
-
-| Method | Route | Input / result |
-|---|---|---|
-| GET | `/` | Main `index.html` |
-| GET | `/api/health` | Server status and busy flag |
-| GET | `/api/models` | Installed packages and last model results |
-| POST | `/api/process` | Multipart `file`, JSON string `options`; returns `image/png` |
-| POST | `/api/detect` | Multipart `file`, JSON string `options` with `confidence`; returns PNG data URI + detection metadata |
-| POST | `/api/remove-background` | Multipart `file`, optional `background` hex color; returns output and transparent PNG data URIs |
-| POST | `/api/video` | Multipart `file`, JSON string `options`; returns HTTP 202 and a job ID |
-| GET | `/api/video/{job_id}` | State, progress, results or failure message |
-| GET | `/api/video/{job_id}/preview` | First processed sample PNG |
-| GET | `/api/video/{job_id}/report` | Frame report JSON |
-| GET | `/api/video/{job_id}/download` | Sampled AVI, when supported |
-
-Image options: `brightness` 0–2, `contrast` / `saturation` / `sharpness` 0–3 (all default 1), `grayscale` boolean, `blur` integer 0–20, `mode` `none` / `edges` / `threshold`, `threshold` integer 0–255 (default 128). Blur radius maps to kernel size `2 * blur + 1`.
-
-Detection: `confidence` 0.05–0.95 (default 0.35), `model` `yolo11n`, `yolo11s` or `demo` (default `yolo11n`), `image_size` 640 / 960 / 1280 (default 640), and `iou` 0.1–0.9 (default 0.5). Lower IoU suppresses more overlapping detections of the same class. Higher resolutions can help with smaller objects but take longer; results depend on the image. Video uses the same detection settings and adds `sample_every` 1–120 (default 10), `max_samples` 1–60 (default 30), and `operation` `edges` or `detect` (default `edges`).
-
-Errors use `{"error":{"message":"..."}}`, with field details for standard FastAPI validation. Video failures after submission appear as `state: "failed"` with an `error` message on the job status route. Status codes include 413 (too large), 422 (invalid input), 429 (busy), 503 (model unavailable), and 504 (worker timeout).
-
-Example:
-
-```bash
-curl -X POST http://127.0.0.1:8000/api/process \
-  -F 'file=@photo.jpg' \
-  -F 'options={"contrast":1.2,"saturation":0.8}' \
-  --output processed.png
-```
-
 ## Notebook
 
 ```bash
