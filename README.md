@@ -2,7 +2,7 @@
 
 A local computer vision workspace for editing images, detecting objects, removing backgrounds and exploring short videos.
 
-**Author and maintainer:** Swayam Shakya · [RippedPaper](https://github.com/RippedPaper)
+**Author and maintainer:** Swayam Shakya · [RippedPaper](https://github.com/requiemdoomed)
 
 Open an image, adjust its details, compare the result and download it. Switch to object detection or background removal when you want to work with pretrained models. Video Lab applies edge detection or object detection to a bounded set of frames and reports the work as it finishes.
 
