@@ -122,6 +122,6 @@ Select the VisionLab kernel. Run All creates a synthetic image, compares eight p
 | Windows Python launcher unavailable | Install Python 3.11/3.12 with the launcher, or follow manual setup using `python`. |
 
 
-## Licensing and dependencies
+## License
 
 Copyright (c) 2026 Swayam Shakya (RippedPaper)
