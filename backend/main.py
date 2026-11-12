@@ -207,7 +207,6 @@ async def remove(file: UploadFile = File(...), background: str = Form("")):
         raise HTTPException(422, "Use a six-digit hex background color.")
     return await model_image("remove", file, {"background": background or None})
 
-
 async def finish_video(job_id, folder):
     job = app.state.jobs[job_id]
     try:
