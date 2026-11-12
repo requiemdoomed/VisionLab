@@ -77,7 +77,6 @@ def test_model_success_contract(client, image, monkeypatch):
             assert 'transparent_image' in response.json()
     assert client.get('/api/models').json()['models'][0]['status'] == 'last run succeeded'
 
-
 def test_busy_and_validation(client, image):
     app.state.busy = True
     assert client.post('/api/process', files={'file': ('test.png', image)}).status_code == 429
