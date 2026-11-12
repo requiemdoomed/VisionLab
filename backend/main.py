@@ -175,7 +175,6 @@ async def process(file: UploadFile = File(...), options: str = Form("{}")):
     finally:
         app.state.busy = False
 
-
 async def model_image(operation, file, options):
     reserve()
     folder = None
