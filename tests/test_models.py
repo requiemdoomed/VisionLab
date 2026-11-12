@@ -7,13 +7,11 @@ from pydantic import ValidationError
 from visionlab.schemas import DetectionOptions
 from visionlab import detection, segmentation
 
-
 @pytest.mark.parametrize('options', [dict(model='../custom'), dict(image_size=641), dict(iou=0),
                                     dict(iou=float('nan')), dict(model='yolo26n')])
 def test_detector_choices_are_bounded(options):
     with pytest.raises(ValidationError):
         DetectionOptions(**options)
-
 
 def test_detection_passes_options_and_hides_invisible_rgb(monkeypatch):
     captured = {}
@@ -35,7 +33,6 @@ def test_detection_passes_options_and_hides_invisible_rgb(monkeypatch):
     assert result['class_counts'] == {} and result['count'] == 0
     assert image.size == (4, 3)
 
-
 class ConstantMaskSession:
     def __init__(self, value):
         self.value = value
@@ -47,18 +44,15 @@ class ConstantMaskSession:
         assert tensor.dtype == np.float32 and np.isfinite(tensor).all()
         return [np.full((1, 1, 320, 320), self.value, dtype=np.float32)]
 
-
 @pytest.mark.parametrize('value,expected', [(0, 0), (1, 255), (.5, 127)])
 def test_black_image_and_constant_mask_are_finite(value, expected):
     mask = segmentation.foreground_mask(Image.new('RGB', (16, 12), 'black'), ConstantMaskSession(value))
     assert mask.size == (16, 12)
     assert np.all(np.asarray(mask) == expected)
 
-
 def test_nonfinite_mask_rejected():
     with pytest.raises(RuntimeError, match='non-finite'):
         segmentation.foreground_mask(Image.new('RGB', (16, 12)), ConstantMaskSession(float('nan')))
-
 
 def test_segmentation_preserves_source_alpha_and_composites(monkeypatch):
     monkeypatch.setattr(segmentation, 'load_session', lambda: ConstantMaskSession(1))
@@ -67,7 +61,6 @@ def test_segmentation_preserves_source_alpha_and_composites(monkeypatch):
     assert cutout.getchannel('A').getextrema() == (0, 0)
     assert composite.getpixel((0, 0)) == (18, 52, 86, 255)
     assert report['backend'] == 'ONNX Runtime'
-
 
 def test_bad_download_is_not_cached(tmp_path, monkeypatch):
     from io import BytesIO
