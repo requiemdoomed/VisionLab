@@ -137,7 +137,6 @@ async def run_worker(operation: str, folder: Path):
 def image_payload(path: Path):
     return "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode("ascii")
 
-
 @app.get("/", include_in_schema=False)
 async def index():
     return FileResponse(ROOT / "index.html", media_type="text/html")
