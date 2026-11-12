@@ -123,7 +123,6 @@ def test_real_video_round_trip(client, tmp_path):
         assert client.get(job['status_url'] + '/download').headers['content-type'] == 'video/x-msvideo'
     assert not list((app.state.folder / job['job_id']).glob('input.*'))
 
-
 def test_corrupt_video_returns_failed_job(client):
     job = client.post('/api/video', files={'file': ('broken.mp4', b'not video')}).json()
     deadline = time.monotonic() + 20
