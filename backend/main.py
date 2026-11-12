@@ -141,11 +141,9 @@ def image_payload(path: Path):
 async def index():
     return FileResponse(ROOT / "index.html", media_type="text/html")
 
-
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "version": "1.2.0", "author": "Swayam Shakya", "busy": app.state.busy}
-
 
 @app.get("/api/models")
 async def models():
