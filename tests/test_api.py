@@ -135,7 +135,6 @@ def test_corrupt_video_returns_failed_job(client):
     assert result['state'] == 'failed'
     assert 'decode' in result['error']
 
-
 def test_worker_timeout_releases_slot(client, image, monkeypatch):
     monkeypatch.setattr('backend.main.WORKER_TIMEOUT', 0.001)
     result = client.post('/api/detect', files={'file': ('test.png', image)})
