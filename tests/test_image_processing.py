@@ -87,7 +87,6 @@ def test_invalid_video_metadata(fps, frames, width, height):
     with pytest.raises(ValueError):
         inspect_video(Capture())
 
-
 def test_fractional_frame_rate_preserves_precision():
     import cv2
     from visionlab.video_processing import inspect_video
@@ -97,3 +96,4 @@ def test_fractional_frame_rate_preserves_precision():
             return {cv2.CAP_PROP_FPS: 29.97002997002997, cv2.CAP_PROP_FRAME_COUNT: 20,
                     cv2.CAP_PROP_FRAME_WIDTH: 640, cv2.CAP_PROP_FRAME_HEIGHT: 480}[key]
     assert inspect_video(Capture())['fps'] == 29.97002997002997
+    
