@@ -44,8 +44,7 @@ def test_black_brightness(sample):
 def test_bad_images(data):
     with pytest.raises(ValueError):
         decode_image(data)
-
-
+        
 def test_unsupported_format(sample):
     stream = BytesIO()
     sample.save(stream, format='GIF')
