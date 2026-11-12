@@ -9,7 +9,6 @@ from visionlab.segmentation import remove_background
 from visionlab.video_processing import analyze_video
 from visionlab.schemas import VideoOptions
 
-
 def write_json(path: Path, value: dict):
     temporary = path.with_suffix(".tmp")
     temporary.write_text(json.dumps(value), encoding="utf-8")
