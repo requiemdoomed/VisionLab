@@ -159,7 +159,6 @@ def test_detection_options_reach_worker(client, image, monkeypatch):
                          data={'options': '{"model":"yolo11s","image_size":960,"iou":0.4}'})
     assert result.status_code == 200
 
-
 def test_total_upload_body_limit(client, monkeypatch):
     monkeypatch.setattr('backend.main.MAX_VIDEO_BYTES', 1)
     result = client.post('/api/video', files={'file': ('test.mp4', b'x' * (1024 * 1024 + 100))})
