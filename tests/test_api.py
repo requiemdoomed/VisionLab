@@ -15,7 +15,6 @@ def client():
     with TestClient(app) as test_client:
         yield test_client
 
-
 @pytest.fixture
 def image():
     return encode_png(Image.new('RGB', (64, 48), '#50abcc'))
