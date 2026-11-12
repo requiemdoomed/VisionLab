@@ -201,7 +201,6 @@ async def detect(file: UploadFile = File(...), options: str = Form("{}")):
     settings = parse_options(DetectionOptions, options)
     return await model_image("detect", file, settings.model_dump())
 
-
 @app.post("/api/remove-background")
 async def remove(file: UploadFile = File(...), background: str = Form("")):
     if background and not re.fullmatch(r"#[0-9a-fA-F]{6}", background):
