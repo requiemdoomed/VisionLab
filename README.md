@@ -124,4 +124,4 @@ Select the VisionLab kernel. Run All creates a synthetic image, compares eight p
 
 ## License
 
-Copyright (c) 2026 Swayam Shakya (RippedPaper)
+Copyright (c) 2026 Swayam Shakya
