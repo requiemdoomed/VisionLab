@@ -82,7 +82,6 @@ async def validation_error(request, exc):
     return JSONResponse({"error": {"message": "Invalid or missing request parameters.",
                                   "fields": [{"field": ".".join(map(str, e["loc"])),
                                               "message": e["msg"]} for e in exc.errors()]}}, status_code=422)
-
 @app.exception_handler(Exception)
 async def unexpected_error(request, exc):
     logger.exception("Request failed: %s", request.url.path)
