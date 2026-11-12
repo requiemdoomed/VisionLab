@@ -146,7 +146,6 @@ def test_rejected_image_does_not_mark_model_as_failed(client):
     assert result.status_code == 422
     assert client.get('/api/models').json()['models'][0]['status'] == 'not run'
 
-
 def test_detection_options_reach_worker(client, image, monkeypatch):
     async def worker(operation, folder):
         options = json.loads((folder / 'options.json').read_text())
