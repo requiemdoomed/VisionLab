@@ -71,9 +71,7 @@ class UploadLimit:
             return message
         await self.app(scope, limited_receive, send)
 
-
 app.add_middleware(UploadLimit)
-
 
 @app.exception_handler(StarletteHTTPException)
 async def http_error(request, exc):
