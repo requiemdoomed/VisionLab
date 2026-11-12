@@ -31,8 +31,7 @@ def run(operation: str, folder: Path):
             raise ValueError("Unknown processing operation.")
         output.save(folder / "output.png")
     write_json(folder / "result.json", result)
-
-
+    
 if __name__ == "__main__":
     folder = Path(sys.argv[2])
     try:
