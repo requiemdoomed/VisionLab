@@ -87,7 +87,6 @@ async def unexpected_error(request, exc):
     logger.exception("Request failed: %s", request.url.path)
     return JSONResponse({"error": {"message": "Unexpected server error. Check the server terminal."}}, status_code=500)
 
-
 def parse_options(model, text):
     try:
         return model.model_validate_json(text)
