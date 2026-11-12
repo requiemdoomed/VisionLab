@@ -271,7 +271,6 @@ async def video(file: UploadFile = File(...), options: str = Form("{}")):
             if folder:
                 shutil.rmtree(folder, ignore_errors=True)
 
-
 def get_job(job_id):
     if not re.fullmatch(r"[a-f0-9]{32}", job_id) or job_id not in app.state.jobs:
         raise HTTPException(404, "Video result not found or expired. Upload the video again.")
