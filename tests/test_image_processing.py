@@ -51,12 +51,10 @@ def test_unsupported_format(sample):
     with pytest.raises(ValueError, match='PNG'):
         decode_image(stream.getvalue())
 
-
 def test_pixel_limit(sample, monkeypatch):
     monkeypatch.setattr('visionlab.image_processing.MAX_PIXELS', 20)
     with pytest.raises(ValueError, match='pixels'):
         decode_image(encode_png(sample))
-
 
 @pytest.mark.parametrize('options', [dict(brightness=-1), dict(contrast=4), dict(blur=21),
                                     dict(mode='invalid'), dict(threshold=256), dict(saturation=float('nan')),
