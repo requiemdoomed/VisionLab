@@ -82,6 +82,7 @@ async def validation_error(request, exc):
     return JSONResponse({"error": {"message": "Invalid or missing request parameters.",
                                   "fields": [{"field": ".".join(map(str, e["loc"])),
                                               "message": e["msg"]} for e in exc.errors()]}}, status_code=422)
+
 @app.exception_handler(Exception)
 async def unexpected_error(request, exc):
     logger.exception("Request failed: %s", request.url.path)
@@ -132,7 +133,6 @@ async def run_worker(operation: str, folder: Path):
     if process.returncode != 0 or not (folder / "result.json").exists():
         raise HTTPException(500, "Processing stopped unexpectedly. Check available memory and the server terminal.")
     return json.loads((folder / "result.json").read_text())
-
 
 def image_payload(path: Path):
     return "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode("ascii")
