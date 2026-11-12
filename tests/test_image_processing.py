@@ -25,12 +25,10 @@ def test_operations_preserve_input_dimensions_and_alpha(sample, options):
     assert result.getchannel('A').tobytes() == sample.getchannel('A').tobytes()
     assert result.tobytes() != before
 
-
 def test_identity_and_encoded_output(sample):
     result = process_image(sample, Adjustments())
     assert result.tobytes() == sample.tobytes()
     assert decode_image(encode_png(result)).tobytes() == result.tobytes()
-
 
 def test_threshold_and_grayscale(sample):
     gray = np.array(process_image(sample, Adjustments(grayscale=True)))
