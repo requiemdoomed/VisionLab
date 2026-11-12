@@ -10,7 +10,6 @@ from PIL import Image
 from backend.main import app
 from visionlab.image_processing import encode_png, decode_image
 
-
 @pytest.fixture
 def client():
     with TestClient(app) as test_client:
