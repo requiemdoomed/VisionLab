@@ -93,7 +93,6 @@ def test_real_missing_dependency_worker(client, image):
     assert result.status_code == 503
     assert 'requirements-models.txt' in result.json()['error']['message']
 
-
 def test_real_video_round_trip(client, tmp_path):
     path = tmp_path / 'sample.avi'
     writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*'MJPG'), 10, (64, 48))
