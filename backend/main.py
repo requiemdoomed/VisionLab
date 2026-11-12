@@ -160,7 +160,6 @@ async def models():
                            ("detect", "YOLO11n / YOLO11s / training demo", "ultralytics", "80 COCO classes. The training demo is experimental; pretrained YOLO11n is the default."),
                            ("remove", "U²-Net small (u2netp)", "onnxruntime", "Foreground segmentation; hair, glass and fine edges can be imperfect.")]]}
 
-
 @app.post("/api/process")
 async def process(file: UploadFile = File(...), options: str = Form("{}")):
     settings = parse_options(Adjustments, options)
