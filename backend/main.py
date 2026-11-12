@@ -94,7 +94,6 @@ def parse_options(model, text):
     except ValueError as exc:
         raise HTTPException(422, "Invalid options: use the documented parameter ranges.") from exc
 
-
 async def image_upload(file: UploadFile):
     try:
         data = await file.read(MAX_IMAGE_BYTES + 1)
