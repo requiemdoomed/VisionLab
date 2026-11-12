@@ -106,7 +106,6 @@ async def image_upload(file: UploadFile):
     finally:
         await file.close()
 
-
 def reserve():
     # All reservations happen on the event loop, before the next await.
     if app.state.busy:
