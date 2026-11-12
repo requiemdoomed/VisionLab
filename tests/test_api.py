@@ -61,8 +61,7 @@ def test_missing_model_response(client, image, monkeypatch):
     assert 'optional' in result.json()['error']['message']
     assert not app.state.busy
     assert not list(app.state.folder.iterdir())
-
-
+    
 def test_model_success_contract(client, image, monkeypatch):
     async def worker(operation, folder):
         (folder / 'output.png').write_bytes(image)
