@@ -282,7 +282,6 @@ async def video_status(job_id: str):
         progress = json.loads((folder / "progress.json").read_text())
     return {key: value for key, value in job.items() if key not in {"created", "finished"}} | {"progress": progress}
 
-
 @app.get("/api/video/{job_id}/{artifact}")
 async def video_artifact(job_id: str, artifact: str):
     job, folder = get_job(job_id)
