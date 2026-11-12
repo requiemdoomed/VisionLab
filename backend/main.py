@@ -77,7 +77,6 @@ app.add_middleware(UploadLimit)
 async def http_error(request, exc):
     return JSONResponse({"error": {"message": str(exc.detail)}}, status_code=exc.status_code)
 
-
 @app.exception_handler(RequestValidationError)
 async def validation_error(request, exc):
     return JSONResponse({"error": {"message": "Invalid or missing request parameters.",
