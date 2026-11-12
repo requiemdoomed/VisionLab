@@ -25,7 +25,6 @@ from visionlab.schemas import Adjustments, DetectionOptions, VideoOptions
 
 logger = logging.getLogger("visionlab")
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.folder = Path(tempfile.mkdtemp(prefix="visionlab-"))
