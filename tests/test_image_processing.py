@@ -39,8 +39,7 @@ def test_threshold_and_grayscale(sample):
 def test_black_brightness(sample):
     result = np.array(process_image(sample, Adjustments(brightness=0)))
     assert not result[:, :, :3].any()
-
-
+    
 @pytest.mark.parametrize('data', [b'', b'not an image', b'\x89PNG\r\n'])
 def test_bad_images(data):
     with pytest.raises(ValueError):
