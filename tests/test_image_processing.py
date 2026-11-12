@@ -63,16 +63,13 @@ def test_bad_parameters(options):
     with pytest.raises(ValidationError):
         Adjustments(**options)
 
-
 def test_video_limits():
     with pytest.raises(ValidationError):
         VideoOptions(max_samples=61)
 
-
 def test_invalid_color_checked_before_model_load(sample):
     with pytest.raises(ValueError, match='hex'):
         remove_background(sample, 'red')
-
 
 @pytest.mark.parametrize('fps,frames,width,height', [
     (0, 20, 640, 480), (float('nan'), 20, 640, 480),
