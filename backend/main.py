@@ -53,7 +53,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="VisionLab Studio", version="1.2.0", lifespan=lifespan)
 
-
 class UploadLimit:
     """Enforce total body size even when the client omits Content-Length."""
     def __init__(self, app):
