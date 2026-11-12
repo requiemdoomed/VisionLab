@@ -51,7 +51,6 @@ async def lifespan(app: FastAPI):
         await asyncio.gather(cleaner, *app.state.tasks, return_exceptions=True)
         shutil.rmtree(app.state.folder, ignore_errors=True)
 
-
 app = FastAPI(title="VisionLab Studio", version="1.2.0", lifespan=lifespan)
 
 
