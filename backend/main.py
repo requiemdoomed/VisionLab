@@ -196,7 +196,6 @@ async def model_image(operation, file, options):
             shutil.rmtree(folder, ignore_errors=True)
         app.state.busy = False
 
-
 @app.post("/api/detect")
 async def detect(file: UploadFile = File(...), options: str = Form("{}")):
     settings = parse_options(DetectionOptions, options)
