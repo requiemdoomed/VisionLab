@@ -12,7 +12,6 @@ import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--launcher', action='store_true')
