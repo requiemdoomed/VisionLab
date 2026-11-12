@@ -37,7 +37,6 @@ def test_processed_download(client, image):
     assert 'attachment' in result.headers['content-disposition']
     assert decode_image(result.content).size == (64, 48)
 
-
 @pytest.mark.parametrize('options', ['not-json', '{"blur":99}', '{"brightness":-1}'])
 def test_invalid_options(client, image, options):
     response = client.post('/api/process', files={'file': ('test.png', image)}, data={'options': options})
