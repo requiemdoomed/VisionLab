@@ -141,7 +141,6 @@ def test_worker_timeout_releases_slot(client, image, monkeypatch):
     assert not app.state.busy
     assert not list(app.state.folder.iterdir())
 
-
 def test_rejected_image_does_not_mark_model_as_failed(client):
     result = client.post('/api/detect', files={'file': ('bad.png', b'not an image')})
     assert result.status_code == 422
