@@ -19,7 +19,6 @@ def client():
 def image():
     return encode_png(Image.new('RGB', (64, 48), '#50abcc'))
 
-
 def test_health_static_and_paths(client, tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     assert client.get('/api/health').json()['status'] == 'ok'
