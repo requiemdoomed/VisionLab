@@ -7,7 +7,6 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 
-
 class Elements(HTMLParser):
     def __init__(self):
         super().__init__()
