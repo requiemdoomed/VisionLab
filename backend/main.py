@@ -228,7 +228,6 @@ async def finish_video(job_id, folder):
             source.unlink(missing_ok=True)
         app.state.busy = False
 
-
 @app.post("/api/video", status_code=202)
 async def video(file: UploadFile = File(...), options: str = Form("{}")):
     settings = parse_options(VideoOptions, options)
