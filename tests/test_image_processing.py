@@ -7,14 +7,12 @@ from visionlab.image_processing import decode_image, encode_png, process_image
 from visionlab.schemas import Adjustments, VideoOptions
 from visionlab.segmentation import remove_background
 
-
 @pytest.fixture
 def sample():
     pixels = np.zeros((48, 64, 4), dtype=np.uint8)
     pixels[:, :, 3] = 128
     pixels[12:36, 16:48, :3] = (240, 100, 50)
     return Image.fromarray(pixels)
-
 
 @pytest.mark.parametrize('options', [dict(brightness=1.4), dict(contrast=2), dict(saturation=0),
                                     dict(sharpness=2), dict(grayscale=True), dict(blur=3),
