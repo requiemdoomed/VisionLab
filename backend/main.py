@@ -274,7 +274,6 @@ def get_job(job_id):
         raise HTTPException(404, "Video result not found or expired. Upload the video again.")
     return app.state.jobs[job_id], app.state.folder / job_id
 
-
 @app.get("/api/video/{job_id}")
 async def video_status(job_id: str):
     job, folder = get_job(job_id)
