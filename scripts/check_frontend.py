@@ -18,7 +18,6 @@ class Elements(HTMLParser):
         if tag == 'script' and 'src' in attributes:
             raise ValueError('The interface must not need an external script.')
 
-
 def main():
     html = (ROOT / 'index.html').read_text(encoding='utf-8')
     parser = Elements(); parser.feed(html)
