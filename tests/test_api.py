@@ -43,7 +43,6 @@ def test_invalid_options(client, image, options):
     assert response.status_code == 422
     assert response.json()['error']['message']
 
-
 def test_missing_invalid_and_oversized_upload(client, image, monkeypatch):
     assert client.post('/api/process').status_code == 422
     response = client.post('/api/process', files={'file': ('fake.jpg', b'invalid')})
