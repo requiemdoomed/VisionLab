@@ -52,7 +52,6 @@ def test_missing_invalid_and_oversized_upload(client, image, monkeypatch):
     assert client.post('/api/process', files={'file': ('test.png', image)}).status_code == 413
     assert not app.state.busy
 
-
 def test_missing_model_response(client, image, monkeypatch):
     async def unavailable(*args):
         raise HTTPException(503, 'Install optional dependencies.')
