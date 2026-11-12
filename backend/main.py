@@ -112,7 +112,6 @@ def reserve():
         raise HTTPException(429, "The studio is processing another request. Try again when it finishes.")
     app.state.busy = True
 
-
 async def run_worker(operation: str, folder: Path):
     process = await asyncio.create_subprocess_exec(
         sys.executable, "-m", "backend.worker", operation, str(folder), cwd=ROOT,
