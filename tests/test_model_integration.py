@@ -19,12 +19,10 @@ from backend.main import app
 
 pytestmark = pytest.mark.skipif(os.getenv('VISIONLAB_MODEL_TESTS') != '1', reason='Real models are opt-in.')
 
-
 @pytest.fixture(scope='module')
 def sample_data():
     path = Path(os.environ['VISIONLAB_SAMPLE_IMAGE'])
     return path.read_bytes()
-
 
 @pytest.mark.parametrize('model,size', [('yolo11n', 640), ('yolo11s', 960)])
 def test_real_detector_api(sample_data, model, size):
@@ -45,7 +43,6 @@ def test_real_detector_api(sample_data, model, size):
             assert 0 <= x1 <= x2 <= annotated.width
             assert 0 <= y1 <= y2 <= annotated.height
 
-
 def test_real_segmentation_api(sample_data):
     with TestClient(app) as client:
         response = client.post('/api/remove-background', files={'file': ('sample.jpg', sample_data)},
@@ -58,7 +55,6 @@ def test_real_segmentation_api(sample_data):
         assert composite.getchannel('A').getextrema() == (255, 255)
         assert cutout.size == composite.size
         assert data['backend'] == 'ONNX Runtime'
-
 
 def test_real_video_detection_api(sample_data, tmp_path):
     source = Image.open(BytesIO(sample_data)).convert('RGB').resize((400, 528))
