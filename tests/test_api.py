@@ -29,7 +29,6 @@ def test_health_static_and_paths(client, tmp_path, monkeypatch):
         assert client.get(path).status_code == 200
     assert client.get('/requirements.txt').status_code == 404
 
-
 def test_processed_download(client, image):
     result = client.post('/api/process', files={'file': ('image.png', image)},
                          data={'options': json.dumps({'grayscale': True})})
