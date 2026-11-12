@@ -36,7 +36,6 @@ def test_threshold_and_grayscale(sample):
     binary = np.array(process_image(sample, Adjustments(mode='threshold')))
     assert set(np.unique(binary[:, :, :3])) <= {0, 255}
 
-
 def test_black_brightness(sample):
     result = np.array(process_image(sample, Adjustments(brightness=0)))
     assert not result[:, :, :3].any()
