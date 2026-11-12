@@ -85,7 +85,6 @@ def test_busy_and_validation(client, image):
     assert client.post('/api/video', files={'file': ('test.txt', b'abc')}).status_code == 422
     assert client.get('/api/video/not-a-job').status_code == 404
 
-
 def test_real_missing_dependency_worker(client, image):
     from importlib.util import find_spec
     if find_spec('ultralytics'):
