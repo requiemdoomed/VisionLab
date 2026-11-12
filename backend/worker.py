@@ -14,7 +14,6 @@ def write_json(path: Path, value: dict):
     temporary.write_text(json.dumps(value), encoding="utf-8")
     temporary.replace(path)
 
-
 def run(operation: str, folder: Path):
     options = json.loads((folder / "options.json").read_text())
     if operation == "video":
