@@ -31,7 +31,6 @@ def main():
         path.write_text(scripts[0], encoding='utf-8')
         subprocess.run(['node', '--check', str(path)], check=True)
     print(f'Frontend passed: {len(parser.ids)} unique IDs; {len(html.encode())} bytes; inline CSS and JS.')
-
-
+ 
 if __name__ == '__main__':
     main()
